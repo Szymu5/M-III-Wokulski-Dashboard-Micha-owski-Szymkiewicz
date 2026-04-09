@@ -1,0 +1,39 @@
+# -------------------------------------------------------------------------
+# Plik .gitignore dla projektu Wokulski Dashboard (Android/Jetpack Compose)
+# -------------------------------------------------------------------------
+
+# 1. Pliki konfiguracyjne specyficzne dla danego komputera (SEKRETY!)
+local.properties
+
+# 2. Pliki budowania Gradle (Brudnopisy - ważą setki megabajtów i generują się same)
+.gradle/
+*/build/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# 3. Ustawienia środowiska Android Studio (Kałamarz programisty)
+.idea/
+.navigation/
+*.iml
+*.iws
+workspace.xml
+tasks.xml
+gradle.xml
+dictionaries
+asset_packs/
+
+# 4. Pliki wyjściowe i artefakty (Gotowe paczki - nie wersjonujemy ich w Git!)
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+
+# 5. Bezpieczeństwo (Klucze do podpisywania aplikacji)
+*.jks
+*.keystore
+
+# 6. Śmieci systemowe (np. z macOS)
+.DS_Store
