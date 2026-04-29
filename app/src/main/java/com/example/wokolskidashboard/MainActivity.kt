@@ -39,23 +39,67 @@ fun MainScreen(modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         Text(text = "SALDO: $saldo rubli", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        IncomeForm(dodajZysk = { listaTransakcji.add(it) })
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
         ExpenseForm(dodajWydatek = { listaTransakcji.add(it) })
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(text = "Historia transakcji:", fontWeight = FontWeight.Bold)
 
-        LazyColumn {
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(listaTransakcji) { t ->
                 Text(
                     text = "${t.title}: ${t.amount} rub.",
-                    color = if (t.isExpense) Color.Red else Color.Green
+                    color = if (t.isExpense) Color.Red else Color(0xFF388E3C),
+                    modifier = Modifier.padding(vertical = 2.dp)
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun IncomeForm(dodajZysk: (Transaction) -> Unit) {
+    val nazwaZysk = remember { mutableStateOf("") }
+    val kwotaZysk = remember { mutableStateOf("") }
+
+    val czyBladKwoty = kwotaZysk.value.isNotEmpty() && kwotaZysk.value.toDoubleOrNull() == null
+    val czyPuste = nazwaZysk.value.isEmpty() || kwotaZysk.value.isEmpty()
+
+    Column {
+        Text(text = "Dodaj przychód:", color = Color(0xFF388E3C), fontWeight = FontWeight.Bold)
+
+        OutlinedTextField(
+            value = nazwaZysk.value,
+            onValueChange = { nazwaZysk.value = it },
+            label = { Text("Co sprzedano?") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = kwotaZysk.value,
+            onValueChange = { kwotaZysk.value = it },
+            label = { Text("Zysk") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            enabled = !czyBladKwoty && !czyPuste,
+            onClick = {
+                val kasa = kwotaZysk.value.toDoubleOrNull() ?: 0.0
+                dodajZysk(Transaction(nazwaZysk.value, kasa, false))
+                nazwaZysk.value = ""
+                kwotaZysk.value = ""
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C))
+        ) {
+            Text("Zaksięguj zysk")
         }
     }
 }
