@@ -1,11 +1,13 @@
 package com.example.wokolskidashboard.ui.components
 
-import android.view.SurfaceControl
+import com.example.wokolskidashboard.model.Transaction
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ExpenseForm(dodajWydatek: (SurfaceControl.Transaction) -> Unit) {
+fun ExpenseForm(dodajWydatek: (Transaction) -> Unit) {
     val nazwaWydatek = remember { mutableStateOf("") }
     val kwotaWydatek = remember { mutableStateOf("") }
 
@@ -46,3 +48,33 @@ fun ExpenseForm(dodajWydatek: (SurfaceControl.Transaction) -> Unit) {
             label = { Text("Ile wydano?") },
             modifier = Modifier.fillMaxWidth()
         )
+
+        if (czyBladKwoty) {
+            Text("Wpisz poprawną liczbę!", color = Color.Red)
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            enabled = !czyBladKwoty && !czyPuste,
+            onClick = {
+                val kasa = kwotaWydatek.value.toDoubleOrNull() ?: 0.0
+
+                val nowyWydatek = Transaction(
+                    title = nazwaWydatek.value,
+                    amount = kasa,
+                    isExpense = true
+                )
+
+                dodajWydatek(nowyWydatek)
+
+                nazwaWydatek.value = ""
+                kwotaWydatek.value = ""
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020))
+        ) {
+            Text("Zaksięguj stratę", color = Color.White)
+        }
+    }
+}
